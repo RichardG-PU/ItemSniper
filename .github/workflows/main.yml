@@ -2,7 +2,7 @@ name: Daily Code Run
 
 on:
   schedule:
-    - cron: '0 12 * * *'
+    - cron: '0 12 * * *
 
 jobs:
   run-code:
@@ -15,10 +15,12 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.x
+        python-version: 'latest'
 
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt  # Make sure to have a requirements.txt file
 
     - name: Run script
       run: python main.py
