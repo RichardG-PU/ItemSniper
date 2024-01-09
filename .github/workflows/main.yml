@@ -2,7 +2,7 @@ name: Continuous Code Run
 
 on:
   schedule:
-    - cron: '* * * * *'
+    - cron: '0 12 * * *'
   push:
     branches:
       - main
