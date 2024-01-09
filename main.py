@@ -11,7 +11,7 @@ postURL = "https://discord.com/api/webhooks/1194124780765458472/5UOtknX2HUmPdZb9
 
 if results.text == "Sold Out":
     postJSON = {
-        "content": "<@326065487395946506>",
+        "content": "",
         "embeds": [
             {
                 "title": "Sniped items",
@@ -21,3 +21,14 @@ if results.text == "Sold Out":
         ],
     }
     requests.post(postURL, json=postJSON)
+else:
+    postJSON = {
+        "content": "",
+        "embeds": [
+            {
+                "title": "Sniped items",
+                "description": "<@326065487395946506> : \n\tItem 1 : https://fearofgod.com/collections/athletics-mens/products/heavy-fleece-hoodie \nCurrently sold out",
+                "color": 5814783,
+            }
+        ],
+    }
