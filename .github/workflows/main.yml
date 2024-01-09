@@ -3,6 +3,9 @@ name: Continuous Code Run
 on:
   schedule:
     - cron: '* * * * *'
+  push:
+    branches:
+      - main  # Replace with your main branch name
 
 jobs:
   run-code:
