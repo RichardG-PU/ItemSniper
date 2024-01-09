@@ -7,7 +7,7 @@ page = requests.get(URL)
 soup = BeautifulSoup(page.content, "html.parser")
 results = soup.find(id="add")
 
-# Webhook URL
+# Webhook URL 
 postURL = "https://discord.com/api/webhooks/1194124780765458472/5UOtknX2HUmPdZb9ft67rPQU48v3PCTmKR47F0kS1Y5ClzVaXUdos2Z_IrNy-wr1DtSy"
 
 if results.text == "Sold Out":
