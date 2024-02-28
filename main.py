@@ -21,7 +21,7 @@ if results.text == "Sold Out":
             }
         ],
     }
-    requests.post(postURL, json=postJSON)
+    # requests.post(postURL, json=postJSON)
 else:
     postJSON = {
         "content": "",
