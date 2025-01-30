@@ -30,7 +30,7 @@ postJSON = {
         "embeds": [
             {
                 "title": "Sniped items",
-                "description": "<@356119350677078016>: \n\tItem 1: " + URL + availability_text,
+                "description": "<@356119350677078016>: \n\tItem 1: " + URL + "\n" + availability_text,
                 "color": 16711680,
             }
         ],
