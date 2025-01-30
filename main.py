@@ -9,11 +9,12 @@ import time
 
 # Setup Selenium
 options = webdriver.ChromeOptions()
-options.add_argument("--headless")  # Required for GitHub Actions
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-blink-features=AutomationControlled")  # Makes it less detectable
 options.add_argument("--disable-gpu")  # Helps avoid rendering issues
-options.add_argument("--window-size=1920,1080")  # Ensure elements load fully
+options.add_argument("--window-size=1920,1080")  # Ensures full page loads
+options.add_argument("--disable-extensions")
+options.add_argument("--disable-popup-blocking")
+options.add_argument("--headless=new")  # More stealthy than normal headless mode
 options.add_argument("--remote-debugging-port=9222")  # Debugging
 
 print("Initializing WebDriver...")
