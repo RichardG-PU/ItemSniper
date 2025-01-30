@@ -28,8 +28,12 @@ driver.get(URL)
 
 # Wait up to 20 seconds for the availability element to appear
 try:
+    print("Scrolling to trigger lazy load...")
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)  # Wait for JavaScript updates
+
     print("Waiting for availability element...")
-    availability_element = WebDriverWait(driver, 20).until(
+    availability_element = WebDriverWait(driver, 40).until(
         EC.presence_of_element_located((By.ID, "availability"))
     )
     availability_text = availability_element.text.strip()
