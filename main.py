@@ -9,13 +9,12 @@ import time
 
 # Setup Selenium
 options = webdriver.ChromeOptions()
-options.add_argument("--disable-blink-features=AutomationControlled")  # Makes it less detectable
-options.add_argument("--disable-gpu")  # Helps avoid rendering issues
-options.add_argument("--window-size=1920,1080")  # Ensures full page loads
-options.add_argument("--disable-extensions")
-options.add_argument("--disable-popup-blocking")
-options.add_argument("--headless=new")  # More stealthy than normal headless mode
-options.add_argument("--remote-debugging-port=9222")  # Debugging
+options.add_argument("--headless")  # Required for GitHub Actions
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-blink-features=AutomationControlled")
+options.add_argument("--disable-gpu")
+options.add_argument("--window-size=1920,1080")
 
 print("Initializing WebDriver...")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
@@ -25,22 +24,35 @@ URL = "https://www.amazon.ca/gp/product/B002Q8I7OA?smid=A3DWYIK6Y9EEQB&th=1&psc=
 
 print(f"Navigating to URL: {URL}")
 driver.get(URL)
+time.sleep(5)
 
-# Wait up to 20 seconds for the availability element to appear
-try:
-    print("Scrolling to trigger lazy load...")
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(3)  # Wait for JavaScript updates
+# Scroll down to trigger lazy loading
+print("Scrolling down to force rendering...")
+driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+time.sleep(3)
 
-    print("Waiting for availability element...")
-    availability_element = WebDriverWait(driver, 40).until(
-        EC.presence_of_element_located((By.ID, "availability"))
-    )
-    availability_text = availability_element.text.strip()
-    print(f"Found availability: {availability_text}")
-except Exception as e:
-    print(f"Availability element NOT found. Exception: {e}")
-    availability_text = "Unknown"
+# Check if element is inside an iframe
+print("Checking for iframes...")
+iframes = driver.find_elements(By.TAG_NAME, "iframe")
+print(f"Found {len(iframes)} iframes.")
+
+for iframe in iframes:
+    driver.switch_to.frame(iframe)
+    try:
+        print("Looking for availability in iframe...")
+        availability_element = driver.find_element(By.ID, "availability")
+        print("Found availability inside an iframe!")
+        break
+    except:
+        driver.switch_to.default_content()
+
+# Wait until the availability element is visible
+print("Waiting for availability to be visible...")
+availability_element = WebDriverWait(driver, 20).until(
+    EC.visibility_of_element_located((By.ID, "availability"))
+)
+availability_text = availability_element.text.strip()
+print(f"Availability found: {availability_text}")
 
 # Send to Discord
 postJSON = {
@@ -54,7 +66,8 @@ postJSON = {
     ],
 }
 
-response = requests.post(postURL, json=postJSON)
-print(f"Discord response: {response.status_code}, {response.text}")
+if availability_text != "Unknown":
+    response = requests.post(postURL, json=postJSON)
+    print(f"Discord response: {response.status_code}, {response.text}")
 
 driver.quit()
